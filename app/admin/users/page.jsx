@@ -3,14 +3,13 @@ import Heading from "@/components/Heading";
 import getAllUser from "@/app/actions/getAllUser";
 import UserCard from "@/components/UserCard";
 
-const users = await getAllUser();
-
-const ManageUsers = () => {
+const ManageUsers = async () => {
+  const users = await getAllUser();
   return (
     <>
-      <Heading title="Available Conference Rooms" />
+      <Heading title="All Users profile" />
       {users.length > 0 ? (
-        users.map((user) => <UserCard user={user} key={user.$id} />)
+        users.map((user) => <UserCard key={user.$id} user={user} />)
       ) : (
         <p>NO rooms available</p>
       )}
