@@ -3,27 +3,27 @@ import confirmBooking from "@/app/actions/confirmBooking";
 import { toast } from "react-toastify";
 
 const ConfirmBookingButton = ({ bookingId }) => {
-  const handleCancelClick = async () => {
-    if (!confirm("Are you sure you want to cancel this booking?")) {
+  const handleConfirmClick = async () => {
+    if (!confirm("Are you sure you want to Confirm this booking?")) {
       return;
     }
 
     try {
       const result = await confirmBooking(bookingId);
       if (result.success) {
-        toast.success("Booking cancelled successfully");
+        toast.success("Booking Confirm successfully");
       }
     } catch (error) {
-      console.log("Error cancelling booking:", error);
+      console.log("Error Confirm booking:", error);
       return {
-        error: "Failed to cancel booking. Please try again later.",
+        error: "Failed to Confirm booking. Please try again later.",
       };
     }
   };
 
   return (
     <button
-      onClick={handleCancelClick}
+      onClick={handleConfirmClick}
       className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto text-center hover:bg-red-700"
     >
       Confirm

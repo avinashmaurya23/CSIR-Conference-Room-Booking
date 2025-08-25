@@ -18,7 +18,8 @@ import { useAuth } from "@/context/authContext";
 
 const Header = () => {
   const router = useRouter();
-  const { isAuthenticated, setIsAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser } =
+    useAuth();
   const isAdmin = currentUser?.role?.includes("admin");
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -30,6 +31,7 @@ const Header = () => {
 
     if (success) {
       setIsAuthenticated(false);
+      setCurrentUser(null);
       router.push("/login");
     } else {
       toast.error(error);
@@ -129,13 +131,13 @@ const Header = () => {
 
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
-                      <Link
+                      {/* <Link
                         href="/profile"
                         onClick={() => setIsDropdownOpen(false)}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         <FaUserCog className="inline mr-2" /> Manage Profile
-                      </Link>
+                      </Link> */}
 
                       {isAdmin && (
                         <>

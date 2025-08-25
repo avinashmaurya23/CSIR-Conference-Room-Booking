@@ -38,7 +38,7 @@ async function createUser(previousState, formData) {
       ID.unique(),
       {
         user_id: user.$id,
-        role: "admin",
+        role: "user",
         email: email,
         name: name,
       }

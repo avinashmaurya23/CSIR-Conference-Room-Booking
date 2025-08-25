@@ -16,9 +16,10 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (state.error) toast.error(state.error);
-    if (state.success) {
+    if (state.success && state.user) {
       toast.success("Login successful!");
       setIsAuthenticated(true);
+      setCurrentUser(state.user);
       // Redirect to home or dashboard
       router.push("/");
     }
