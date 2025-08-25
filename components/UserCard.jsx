@@ -23,9 +23,9 @@ const UserCard = ({ user }) => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row w-full sm:w-auto sm:shrink-0 sm:space-x-2 mt-2 sm:mt-0">
-          <Button className="bg-blue-500 text-white px-4 py-2 rounded mb-2 sm:mb-0 w-full sm:w-auto text-center hover:bg-blue-700">
+          <h1 className="bg-blue-500 text-white px-4 py-2 rounded mb-2 sm:mb-0 w-full sm:w-auto text-center hover:bg-blue-700">
             View Room
-          </Button>
+          </h1>
         </div>
       </div>
     </div>
