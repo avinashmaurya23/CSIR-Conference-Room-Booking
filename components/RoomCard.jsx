@@ -32,7 +32,7 @@ const RoomCard = ({ room }) => {
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-gray-800"> Ammenities:</span>
-            {room.ammenities}
+            {room.amenities}
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-gray-800">

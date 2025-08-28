@@ -12,26 +12,28 @@ const RegisterPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (state.error) toast.error(state.error);
+    if (state.error) {
+      toast.error(state.error);
+    }
     if (state.success) {
       toast.success("Registration successful!");
-      // Redirect to login page
       router.push("/login");
     }
-  }, [state]);
+    // Correctly include router in the dependency array
+  }, [state, router]);
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-sm mt-20">
+    <div className="flex justify-center items-center py-20 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white shadow-md border border-gray-200 rounded-lg p-8 w-full max-w-sm">
         <form action={formAction}>
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-8">
             Register
           </h2>
 
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               htmlFor="name"
-              className="block text-gray-700 font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Name
             </label>
@@ -39,15 +41,15 @@ const RegisterPage = () => {
               type="text"
               id="name"
               name="name"
-              className="border rounded w-full py-2 px-3"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               required
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               htmlFor="email"
-              className="block text-gray-700 font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Email
             </label>
@@ -55,15 +57,15 @@ const RegisterPage = () => {
               type="email"
               id="email"
               name="email"
-              className="border rounded w-full py-2 px-3"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               required
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               htmlFor="password"
-              className="block text-gray-700 font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Password
             </label>
@@ -71,15 +73,15 @@ const RegisterPage = () => {
               type="password"
               id="password"
               name="password"
-              className="border rounded w-full py-2 px-3"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               required
             />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-8">
             <label
               htmlFor="confirm-password"
-              className="block text-gray-700 font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Confirm Password
             </label>
@@ -87,7 +89,7 @@ const RegisterPage = () => {
               type="password"
               id="confirm-password"
               name="confirm-password"
-              className="border rounded w-full py-2 px-3"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
               required
             />
           </div>
@@ -95,14 +97,17 @@ const RegisterPage = () => {
           <div className="flex flex-col gap-5">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Register
             </button>
 
-            <p>
-              Have an account?
-              <Link href="/login" className="text-blue-500">
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Have an account?{" "}
+              <Link
+                href="/login"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Login
               </Link>
             </p>

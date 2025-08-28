@@ -55,8 +55,9 @@ async function createRoom(previousState, formData) {
         description: formData.get("description"),
         sqft: formData.get("sqft"),
         capacity: formData.get("capacity"),
-        ammenities: formData.get("ammenities"),
+        amenities: formData.get("amenities"),
         availability: formData.get("availability"),
+        location: formData.get("location"),
         image: imageID,
       }
     );
