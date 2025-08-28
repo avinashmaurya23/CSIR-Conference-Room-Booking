@@ -1,5 +1,6 @@
 "use server";
 import { createAdminClient } from "@/config/appwrite";
+import { revalidatePath } from "next/cache";
 import { ID } from "node-appwrite";
 
 async function createUser(previousState, formData) {
@@ -43,6 +44,9 @@ async function createUser(previousState, formData) {
         name: name,
       }
     );
+
+    revalidatePath("/users");
+
     return {
       success: true,
     };
