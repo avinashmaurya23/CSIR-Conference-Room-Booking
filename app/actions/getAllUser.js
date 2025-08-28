@@ -14,7 +14,7 @@ async function getAllUser() {
 
     // Revalidate the cache for this path
 
-    // revalidatePath("/", "layout");
+    revalidatePath("/users");
 
     return users;
   } catch (error) {
