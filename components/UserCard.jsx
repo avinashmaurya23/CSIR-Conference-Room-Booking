@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import MakeUserButton from "./MakeUserButton";
-import MakeAdminButton from "./MakeAdminButton";
+import React from "react";
+import ChangeRoleButton from "./ChangeRoleButton"; // Import the new combined button
 
 const UserCard = ({ user }) => {
   return (
@@ -11,12 +10,18 @@ const UserCard = ({ user }) => {
         <div className="space-y-1">
           <h4 className="text-lg text-black font-semibold">{user.name}</h4>
           <p className="text-sm text-gray-600">
-            <span className="font-semibold text-gray-800">User id: </span>
-            {user.user_id}
+            <span className="font-semibold text-gray-800">User ID: </span>
+            {user.$id} {/* Using Appwrite's document ID */}
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-gray-800">Role: </span>
-            {user.role}
+            <span
+              className={`font-bold capitalize ${
+                user.role === "admin" ? "text-sky-600" : "text-amber-600"
+              }`}
+            >
+              {user.role}
+            </span>
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-gray-800">Email: </span>
@@ -26,8 +31,8 @@ const UserCard = ({ user }) => {
       </div>
 
       <div className="flex space-x-2 mt-4 sm:mt-0">
-        <MakeUserButton userId={user.$id} />
-        <MakeAdminButton userId={user.$id} />
+        {/* Replace the two old buttons with your single, smart component */}
+        <ChangeRoleButton user={user} />
       </div>
     </div>
   );
