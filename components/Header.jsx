@@ -142,7 +142,7 @@ const Header = () => {
                       {isAdmin && (
                         <>
                           <Link
-                            href="/admin/users"
+                            href="/users"
                             onClick={() => setIsDropdownOpen(false)}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
