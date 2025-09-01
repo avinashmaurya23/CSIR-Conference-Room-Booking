@@ -20,7 +20,6 @@ async function bookRoom(previousState, formData) {
     const { databases } = await createSessionClient(sessionCookie.value);
     // get User ID
     const { user } = await checkAuth();
-    console.log("User ID:", user.name);
 
     if (!user) {
       return {

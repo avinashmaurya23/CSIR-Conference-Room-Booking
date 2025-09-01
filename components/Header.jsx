@@ -20,31 +20,14 @@ const Header = () => {
   const router = useRouter();
   const { isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser } =
     useAuth();
-
-  // Safer admin check
-  const isAdmin = Array.isArray(currentUser?.role)
-    ? currentUser.role.includes("admin")
-    : currentUser?.role === "admin";
+  const isAdmin = currentUser?.role?.includes("admin");
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for the mobile hamburger menu
   const dropdownRef = useRef(null);
-
-  // --- Data for Navigation Links (DRY Principle) ---
-  const commonLinks = [{ href: "/", text: "Conference Room" }];
-  const userLinks = [{ href: "/bookings", text: "Bookings" }];
-  const adminNavLinks = [
-    { href: "/rooms/add", text: "Add Conference Room" },
-    { href: "/Requests", text: "New Requests" },
-  ];
-  const adminDropdownLinks = [
-    { href: "/users", text: "Manage Users", icon: FaUserShield },
-    { href: "/rooms/my", text: "My Rooms", icon: FaBuilding },
-  ];
 
   const handleLogout = async () => {
     setIsDropdownOpen(false);
-    setIsMobileMenuOpen(false);
     const { success, error } = await destroySession();
 
     if (success) {
@@ -62,23 +45,18 @@ const Header = () => {
         setIsDropdownOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  // Helper function to close menus on link navigation
   const handleLinkClick = () => {
     setIsMobileMenuOpen(false);
     setIsDropdownOpen(false);
   };
-
-  // Combine links for cleaner rendering
-  const allNavLinks = [
-    ...commonLinks,
-    ...(isAuthenticated ? userLinks : []),
-    ...(isAuthenticated && isAdmin ? adminNavLinks : []),
-  ];
 
   return (
     <header className="bg-gray-100 sticky top-0 z-50">
@@ -96,70 +74,105 @@ const Header = () => {
             {/* -- DESKTOP MENU -- */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                {allNavLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
-                  >
-                    {link.text}
-                  </Link>
-                ))}
+                <Link
+                  href="/"
+                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
+                >
+                  Conference Room
+                </Link>
+                {isAuthenticated && (
+                  <>
+                    <Link
+                      href="/bookings"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
+                    >
+                      Bookings
+                    </Link>
+                    {isAdmin && (
+                      <>
+                        <Link
+                          href="/rooms/add"
+                          className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
+                        >
+                          Add Conference Room
+                        </Link>
+                        <Link
+                          href="/Requests"
+                          className="rounded-md px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
+                        >
+                          New Requests
+                        </Link>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
 
-          {/* -- DESKTOP PROFILE/LOGIN -- */}
           <div className="hidden md:flex items-center">
-            {isAuthenticated ? (
-              <div className="relative ml-4" ref={dropdownRef}>
-                <button
-                  onClick={() => setIsDropdownOpen((prev) => !prev)}
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200"
-                >
-                  <FaUserCog className="inline mr-2" /> My Profile
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
-                    {isAdmin &&
-                      adminDropdownLinks.map((link) => {
-                        const Icon = link.icon;
-                        return (
+            {" "}
+            {/* This div is for desktop right-side items */}
+            {/* -- DESKTOP PROFILE/LOGIN -- */}
+            <div className="ml-4 flex items-center md:ml-6">
+              {!isAuthenticated && (
+                <>
+                  <Link
+                    href="/login"
+                    className="mr-3 text-gray-800 hover:text-gray-600"
+                  >
+                    <FaSignInAlt className="inline mr-1" /> Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="mr-3 text-gray-800 hover:text-gray-600"
+                  >
+                    <FaUser className="inline mr-1" /> Register
+                  </Link>
+                </>
+              )}
+
+              {isAuthenticated && (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200"
+                  >
+                    <FaUserCog className="inline mr-2" /> My Profile
+                  </button>
+
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                      {isAdmin && (
+                        <>
                           <Link
-                            key={link.href}
-                            href={link.href}
-                            onClick={handleLinkClick}
+                            href="/users"
+                            onClick={() => setIsDropdownOpen(false)}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
-                            <Icon className="inline mr-2" /> {link.text}
+                            <FaUserShield className="inline mr-2" /> Manage
+                            Users
                           </Link>
-                        );
-                      })}
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <FaSignOutAlt className="inline mr-2" /> Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="ml-4 flex items-center md:ml-6">
-                <Link
-                  href="/login"
-                  className="mr-3 text-gray-800 hover:text-gray-600"
-                >
-                  <FaSignInAlt className="inline mr-1" /> Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="mr-3 text-gray-800 hover:text-gray-600"
-                >
-                  <FaUser className="inline mr-1" /> Register
-                </Link>
-              </div>
-            )}
+                          <Link
+                            href="/rooms/my"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            <FaBuilding className="inline mr-2" /> My Rooms
+                          </Link>
+                        </>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <FaSignOutAlt className="inline mr-2" /> Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* -- HAMBURGER BUTTON -- */}
@@ -207,29 +220,63 @@ const Header = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {allNavLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={handleLinkClick}
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
-              >
-                {link.text}
-              </Link>
-            ))}
-            {isAuthenticated &&
-              isAdmin &&
-              adminDropdownLinks.map((link) => (
+            <Link
+              href="/"
+              onClick={handleLinkClick}
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+            >
+              Conference Room
+            </Link>
+            {isAuthenticated && (
+              <>
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  href="/bookings"
                   onClick={handleLinkClick}
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
                 >
-                  {link.text}
+                  Bookings
                 </Link>
-              ))}
-            {!isAuthenticated ? (
+                {isAdmin && (
+                  <>
+                    <Link
+                      href="/rooms/add"
+                      onClick={handleLinkClick}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+                    >
+                      Add Conference Room
+                    </Link>
+                    <Link
+                      href="/Requests"
+                      onClick={handleLinkClick}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+                    >
+                      New Requests
+                    </Link>
+                    <Link
+                      href="/users"
+                      onClick={handleLinkClick}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+                    >
+                      Manage Users
+                    </Link>
+                    <Link
+                      href="/rooms/my"
+                      onClick={handleLinkClick}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+                    >
+                      My Rooms
+                    </Link>
+                  </>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
+                >
+                  <FaSignOutAlt className="inline mr-2" /> Sign Out
+                </button>
+              </>
+            )}
+            {!isAuthenticated && (
               <>
                 <Link
                   href="/login"
@@ -246,13 +293,6 @@ const Header = () => {
                   <FaUser className="inline mr-1" /> Register
                 </Link>
               </>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-200"
-              >
-                <FaSignOutAlt className="inline mr-2" /> Sign Out
-              </button>
             )}
           </div>
         </div>
