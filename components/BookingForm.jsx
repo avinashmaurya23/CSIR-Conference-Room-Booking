@@ -1,17 +1,16 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback, useMemo } from "react"; // Imported useCallback and useMemo
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useActionState } from "react";
 import { toast } from "react-toastify";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import bookRoom from "@/app/actions/bookRoom";
 
-// --- Helper Functions (Moved outside component for optimization) ---
+// --- Helper Functions ---
 const normalizeDate = (date) => {
   if (!date) return "";
   const d = new Date(date);
-  // Adjust for timezone to prevent off-by-one-day errors
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
   return d.toISOString().split("T")[0];
 };
@@ -55,18 +54,15 @@ const timeToMinutes = (time) => {
 const BookingForm = ({ room, bookedDates = [] }) => {
   const [state, formAction] = useActionState(bookRoom, {});
   const router = useRouter();
-
   const markedBookedDates = bookedDates.map((dateStr) => new Date(dateStr));
 
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
   const [checkInTime, setCheckInTime] = useState("");
   const [checkOutTime, setCheckOutTime] = useState("");
-
   const [bookedSlotsCheckIn, setBookedSlotsCheckIn] = useState([]);
   const [bookedSlotsCheckOut, setBookedSlotsCheckOut] = useState([]);
 
-  // Optimized data fetching with useCallback
   const fetchBookedSlots = useCallback(
     async (date, setSlots) => {
       if (!date) {
@@ -93,36 +89,87 @@ const BookingForm = ({ room, bookedDates = [] }) => {
     fetchBookedSlots(checkOutDate, setBookedSlotsCheckOut);
   }, [checkOutDate, fetchBookedSlots]);
 
-  // Memoized calculation for disabled times to improve performance
+  // --- REVISED LOGIC FOR isCheckInTimeBooked ---
   const isCheckInTimeBooked = useMemo(() => {
     const bookedMinutes = new Set();
+    const selectedDay = normalizeDate(checkInDate);
+
     bookedSlotsCheckIn.forEach(({ check_in, check_out }) => {
-      const start = timeToMinutes(check_in.split("T")[1].slice(0, 5));
-      const end = timeToMinutes(check_out.split("T")[1].slice(0, 5));
-      for (let m = start; m < end; m += 30) {
+      const bookingStartDate = check_in.split("T")[0];
+      const bookingEndDate = check_out.split("T")[0];
+
+      let startMinutes, endMinutes;
+
+      if (bookingStartDate === bookingEndDate) {
+        // Single-day booking
+        startMinutes = timeToMinutes(check_in.split("T")[1].slice(0, 5));
+        endMinutes = timeToMinutes(check_out.split("T")[1].slice(0, 5));
+      } else {
+        // Multi-day booking
+        if (selectedDay === bookingStartDate) {
+          // We are on the start day of the multi-day booking
+          startMinutes = timeToMinutes(check_in.split("T")[1].slice(0, 5));
+          endMinutes = 24 * 60; // Block until end of day
+        } else if (selectedDay === bookingEndDate) {
+          // We are on the end day
+          startMinutes = 0; // Block from start of day
+          endMinutes = timeToMinutes(check_out.split("T")[1].slice(0, 5));
+        } else {
+          // We are in the middle of the booking
+          startMinutes = 0;
+          endMinutes = 24 * 60; // Block the entire day
+        }
+      }
+
+      for (let m = startMinutes; m < endMinutes; m += 30) {
         bookedMinutes.add(m);
       }
     });
+
     return (timeAMPM) => {
       if (!timeAMPM) return false;
       const minutes = timeToMinutes(convertTo24Hour(timeAMPM));
       return bookedMinutes.has(minutes);
     };
-  }, [bookedSlotsCheckIn]);
+  }, [bookedSlotsCheckIn, checkInDate]);
 
+  // --- REVISED LOGIC FOR isCheckOutTimeBooked ---
   const isCheckOutTimeBooked = useMemo(() => {
     const isSameDay =
       checkInDate &&
       checkOutDate &&
       normalizeDate(checkInDate) === normalizeDate(checkOutDate);
     const checkInMinutes = timeToMinutes(convertTo24Hour(checkInTime));
+    const selectedDay = normalizeDate(checkOutDate);
 
     const bookedMinutes = new Set();
+
     bookedSlotsCheckOut.forEach(({ check_in, check_out }) => {
-      const start = timeToMinutes(check_in.split("T")[1].slice(0, 5));
-      const end = timeToMinutes(check_out.split("T")[1].slice(0, 5));
-      for (let m = start; m < end; m += 30) {
-        bookedMinutes.add(m + 1); // Add 1 to handle end-time logic correctly
+      const bookingStartDate = check_in.split("T")[0];
+      const bookingEndDate = check_out.split("T")[0];
+
+      let startMinutes, endMinutes;
+
+      if (bookingStartDate === bookingEndDate) {
+        startMinutes = timeToMinutes(check_in.split("T")[1].slice(0, 5));
+        endMinutes = timeToMinutes(check_out.split("T")[1].slice(0, 5));
+      } else {
+        if (selectedDay === bookingStartDate) {
+          startMinutes = timeToMinutes(check_in.split("T")[1].slice(0, 5));
+          endMinutes = 24 * 60;
+        } else if (selectedDay === bookingEndDate) {
+          startMinutes = 0;
+          endMinutes = timeToMinutes(check_out.split("T")[1].slice(0, 5));
+        } else {
+          startMinutes = 0;
+          endMinutes = 24 * 60;
+        }
+      }
+      // Note: we check for the final time slot, not `m < end`. A booking until 5 PM should make 5 PM available.
+      for (let m = startMinutes; m < endMinutes; m += 30) {
+        // The checkout time itself can be a start of another booking, so we check `m + 1` to ensure the slot is truly free.
+        // e.g. Booked 9:00-9:30. A new booking can start at 9:30.
+        bookedMinutes.add(m);
       }
     });
 
@@ -130,10 +177,10 @@ const BookingForm = ({ room, bookedDates = [] }) => {
       if (!timeAMPM) return false;
       const minutes = timeToMinutes(convertTo24Hour(timeAMPM));
 
-      // **BUG FIX:** Only apply this rule if it's the same day
       if (isSameDay && checkInTime && minutes <= checkInMinutes) {
-        return true;
+        return true; // Checkout must be after check-in on the same day
       }
+
       return bookedMinutes.has(minutes);
     };
   }, [bookedSlotsCheckOut, checkInDate, checkOutDate, checkInTime]);
@@ -147,6 +194,7 @@ const BookingForm = ({ room, bookedDates = [] }) => {
   }, [state, router]);
 
   return (
+    // The rest of your JSX remains the same
     <div className="mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 className="text-xl text-gray-800 font-bold">
         Book this Conference Room
@@ -177,7 +225,7 @@ const BookingForm = ({ room, bookedDates = [] }) => {
               mode="single"
               selected={checkInDate}
               onSelect={setCheckInDate}
-              disabled={{ before: new Date() }} // Prevent selecting past dates
+              disabled={{ before: new Date() }}
               modifiers={{ booked: markedBookedDates }}
               modifiersStyles={{
                 booked: {
@@ -195,7 +243,6 @@ const BookingForm = ({ room, bookedDates = [] }) => {
               required
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Check-Out Date
@@ -204,7 +251,7 @@ const BookingForm = ({ room, bookedDates = [] }) => {
               mode="single"
               selected={checkOutDate}
               onSelect={setCheckOutDate}
-              disabled={{ before: checkInDate || new Date() }} // Prevent selecting date before check-in
+              disabled={{ before: checkInDate || new Date() }}
               modifiers={{ booked: markedBookedDates }}
               modifiersStyles={{
                 booked: {
@@ -222,7 +269,6 @@ const BookingForm = ({ room, bookedDates = [] }) => {
               required
             />
           </div>
-
           <div>
             <label
               htmlFor="check_in_time_ui"
@@ -256,7 +302,6 @@ const BookingForm = ({ room, bookedDates = [] }) => {
               required
             />
           </div>
-
           <div>
             <label
               htmlFor="check_out_time_ui"
@@ -292,7 +337,6 @@ const BookingForm = ({ room, bookedDates = [] }) => {
             />
           </div>
         </div>
-
         <div className="mt-6">
           <button
             type="submit"

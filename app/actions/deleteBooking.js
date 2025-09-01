@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import checkAuth from "./checkAuth";
 
-async function rejectBooking(bookingId) {
+async function deleteBooking(bookingId) {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("appwrite-session");
 
@@ -24,13 +24,11 @@ async function rejectBooking(bookingId) {
         error: "You must be logged in to cancel bookings",
       };
     }
-    await databases.updateDocument(
+
+    await databases.deleteDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_BOOKINGS,
-      bookingId,
-      {
-        booking_status: "Declined",
-      }
+      bookingId
     );
 
     revalidatePath("/bookings"), "layout";
@@ -45,4 +43,4 @@ async function rejectBooking(bookingId) {
   }
 }
 
-export default rejectBooking;
+export default deleteBooking;

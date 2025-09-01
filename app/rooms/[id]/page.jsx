@@ -14,7 +14,7 @@ import { MdEventAvailable } from "react-icons/md";
 import { getBookedDates } from "@/app/actions/getBookedDates";
 
 const RoomPage = async ({ params }) => {
-  const { id } = params;
+  const { id } = await params;
   const room = await getSingleRoom(id);
 
   if (!room) {
