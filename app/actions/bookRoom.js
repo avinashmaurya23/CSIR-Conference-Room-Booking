@@ -38,12 +38,6 @@ async function bookRoom(previousState, formData) {
     const checkInDateTime = `${checkInDate}T${checkInTime}`;
     const checkOutDateTime = `${checkOutDate}T${checkOutTime}`;
 
-    console.log(checkInDate);
-    console.log(checkInTime);
-    console.log(checkOutDate);
-    console.log(checkOutTime);
-    console.log(checkInDateTime);
-
     //Check if room is available
     const availabilityResult = await checkRoomAvailability(
       roomId,

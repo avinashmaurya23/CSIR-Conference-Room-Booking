@@ -46,7 +46,6 @@ async function cancelBooking(bookingId) {
       success: true,
     };
   } catch (error) {
-    console.log("Failed to cancel rooms", error);
     return {
       error: "Failed to cancel booking. Please try again later.",
     };

@@ -32,12 +32,6 @@ async function checkAuth() {
 
     const [users] = await getUser(); // Await here to get actual docs
 
-    console.log("Users array length:", users.length);
-
-    if (users.length > 0) {
-      console.log("First user document:", users); // Log the first document, not the 'user' account
-    }
-    console.log(users.role);
     return {
       isAuthenticated: true,
       user: {
