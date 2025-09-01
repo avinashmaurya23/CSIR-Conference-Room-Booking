@@ -41,10 +41,6 @@ const RoomCard = ({ room }) => {
             </span>
             {room.capacity}
           </p>
-          {/* <p className="text-sm text-gray-600">
-              <span className="font-semibold text-gray-800"> Price:</span>
-              ${room.price_per_hour} per hour
-            </p>  */}
         </div>
       </div>
       <div className="flex flex-col sm:flex-row w-full sm:w-auto sm:shrink-0 sm:space-x-2 mt-2 sm:mt-0">
