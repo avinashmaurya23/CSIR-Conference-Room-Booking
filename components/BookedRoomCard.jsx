@@ -61,7 +61,7 @@ function BookedRoomCard({ booking }) {
             href={`/rooms/${room.$id}`}
             className="bg-blue-600 text-white px-4 py-2 rounded-md mb-2 sm:mb-0 w-full sm:w-auto text-center hover:bg-blue-700 transition-colors text-sm font-medium"
           >
-            View Room
+            View Room 2
           </Link>
 
           {/* Cancel button only shows if the booking is 'pending' or 'confirmed' */}
