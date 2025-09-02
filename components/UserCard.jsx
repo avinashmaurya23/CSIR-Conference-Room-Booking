@@ -2,6 +2,7 @@
 
 import React from "react";
 import ChangeRoleButton from "./ChangeRoleButton"; // Import the new combined button
+import DeleteUserButton from "./DeleteUserButton";
 
 const UserCard = ({ user }) => {
   return (
@@ -33,6 +34,7 @@ const UserCard = ({ user }) => {
       <div className="flex space-x-2 mt-4 sm:mt-0">
         {/* Replace the two old buttons with your single, smart component */}
         <ChangeRoleButton user={user} />
+        <DeleteUserButton user={user} />
       </div>
     </div>
   );
