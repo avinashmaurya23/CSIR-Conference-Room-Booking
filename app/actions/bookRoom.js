@@ -60,7 +60,7 @@ async function bookRoom(previousState, formData) {
       user_name: user.name,
       room_id: roomId,
       event_name: eventName,
-      booking_status: "pending", // Set default status for new bookings
+      booking_status: "Pending", // Set default status for new bookings
     };
 
     //Create booking
