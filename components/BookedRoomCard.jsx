@@ -31,7 +31,9 @@ const StatusBadge = ({ status }) => {
 
 function BookedRoomCard({ booking }) {
   const { room_id: room } = booking;
-  const isCancellable = booking.booking_status === "Pending";
+  const isCancellable =
+    booking.booking_status === "Pending" ||
+    booking.booking_status === "Declined";
 
   return (
     <div className="bg-white shadow-md border border-gray-200 hover:shadow-lg transition-shadow mx-4 xl:mx-auto max-w-7xl rounded-lg p-4 mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
