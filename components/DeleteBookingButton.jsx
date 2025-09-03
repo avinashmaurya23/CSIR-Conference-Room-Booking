@@ -1,10 +1,11 @@
 "use client";
 import deleteBooking from "@/app/actions/deleteBooking";
 import { toast } from "react-toastify";
+import { FaTrash } from "react-icons/fa";
 
 const DeleteBookingButton = ({ bookingId }) => {
   const handleConfirmClick = async () => {
-    if (!confirm("Are you sure you want to Confirm this booking?")) {
+    if (!confirm("Are you sure you want to Delete this booking?")) {
       return;
     }
 
@@ -24,9 +25,10 @@ const DeleteBookingButton = ({ bookingId }) => {
   return (
     <button
       onClick={handleConfirmClick}
-      className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto text-center hover:bg-red-700"
+      className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-red-500 to-rose-600 shadow-md hover:from-red-600 hover:to-rose-700 hover:shadow-lg active:scale-95 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
     >
-      Confirm
+      <span>Delete Booking</span>
+      <FaTrash />
     </button>
   );
 };

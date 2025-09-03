@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import CancelBookingButton from "@/components/CancelBookingButton";
+import DeleteBookingButton from "./DeleteBookingButton";
 import { DateTime } from "luxon";
 
 // Helper function using Luxon for cleaner, more reliable date formatting.
@@ -13,9 +14,9 @@ const formatDate = (dateString) => {
 // A small component for the color-coded status badge.
 const StatusBadge = ({ status }) => {
   const statusStyles = {
-    pending: "bg-yellow-100 text-yellow-800",
-    confirmed: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
+    Pending: "bg-yellow-100 text-yellow-800",
+    Confirm: "bg-green-100 text-green-800",
+    Declined: "bg-red-100 text-red-800",
   };
 
   return (
@@ -31,7 +32,6 @@ const StatusBadge = ({ status }) => {
 
 function BookedRoomCard({ booking }) {
   const { room_id: room } = booking;
-  console.log(booking.booking_status);
   const isCancellable =
     booking.booking_status === "Pending" ||
     booking.booking_status === "Confirm";
@@ -67,6 +67,7 @@ function BookedRoomCard({ booking }) {
 
           {/* Cancel button only shows if the booking is 'pending' or 'confirmed' */}
           {isCancellable && <CancelBookingButton bookingId={booking.$id} />}
+          {!isCancellable && <DeleteBookingButton bookingId={booking.$id} />}
         </div>
       </div>
     </div>
