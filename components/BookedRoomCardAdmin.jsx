@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import RejectBookingButton from "@/components/RejectBookingButton";
 import ConfirmBookingButton from "./ConfirmBookingButton";
+import DeleteBookingButton from "./DeleteBookingButton";
 
 // Helper function moved outside the component to prevent re-creation on every render.
 const formatDate = (dateString) => {
@@ -22,9 +23,9 @@ const formatDate = (dateString) => {
 // A small component for the color-coded status badge.
 const StatusBadge = ({ status }) => {
   const statusStyles = {
-    pending: "bg-yellow-100 text-yellow-800",
-    confirmed: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
+    Pending: "bg-yellow-100 text-yellow-800",
+    Confirm: "bg-green-100 text-green-800",
+    Declined: "bg-red-100 text-red-800",
   };
 
   return (
@@ -74,10 +75,20 @@ function BookedRoomCardAdmin({ booking }) {
           </Link>
 
           {/* Buttons only show if the booking is 'pending' */}
-          {booking.booking_status === "pending" && (
+          {booking.booking_status === "Pending" && (
             <>
               <ConfirmBookingButton bookingId={booking.$id} />
               <RejectBookingButton bookingId={booking.$id} />
+            </>
+          )}
+          {booking.booking_status === "Confirm" && (
+            <>
+              <RejectBookingButton bookingId={booking.$id} />
+            </>
+          )}
+          {booking.booking_status === "Declined" && (
+            <>
+              <DeleteBookingButton bookingId={booking.$id} />
             </>
           )}
         </div>
