@@ -1,3 +1,4 @@
+"use server";
 import { createAdminClient } from "@/config/appwrite";
 import { Query } from "node-appwrite";
 
