@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { MdEventAvailable } from "react-icons/md";
 import { getBookedDates } from "@/app/actions/getBookedDates";
+import { FiMapPin } from "react-icons/fi";
 
 const RoomPage = async ({ params }) => {
   const { id } = await params;
@@ -58,7 +59,7 @@ const RoomPage = async ({ params }) => {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {room.name}
             </h1>
-            <p className="text-gray-500 mb-6">{room.location}</p>
+
             <p className="text-gray-700 leading-relaxed mb-6">
               {room.description}
             </p>
@@ -67,6 +68,11 @@ const RoomPage = async ({ params }) => {
               Room Details
             </h3>
             <ul className="space-y-4 text-gray-700">
+              <li className="flex items-center">
+                <FiMapPin className="mr-3 text-blue-500" size={20} />
+                <span className="font-semibold text-gray-800">Location:</span>
+                <span className="ml-2">{room.location}</span>
+              </li>
               <li className="flex items-center">
                 <FaRulerCombined className="mr-3 text-blue-500" size={20} />
                 <span className="font-semibold text-gray-800">Size:</span>
