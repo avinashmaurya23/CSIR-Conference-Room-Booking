@@ -1,44 +1,55 @@
 import React from "react";
-import { FaClock, FaCalendarAlt, FaUsers } from "react-icons/fa";
+// FiHome is now imported instead of FiMapPin
+import { FiClock, FiUsers, FiHome } from "react-icons/fi";
 import { DateTime } from "luxon";
-
-// Helper function using Luxon for cleaner, more reliable date formatting.
-const formatDate = (dateString) => {
-  return DateTime.fromISO(dateString, { zone: "utc" }).toFormat(
-    "MMM d 'at' h:mm a"
-  );
-};
 
 export default function MeetingCard({ meeting }) {
   const { room_id: room } = meeting;
+
+  const checkInDt = DateTime.fromISO(meeting.check_in, { zone: "utc" });
+  const checkOutDt = DateTime.fromISO(meeting.check_out, { zone: "utc" });
+
+  const isSingleDay = checkInDt.hasSame(checkOutDt, "day");
+
+  let displayDate;
+
+  if (isSingleDay) {
+    displayDate = `${checkInDt.toFormat("MMM d")}, ${checkInDt.toFormat(
+      "h:mm a"
+    )} - ${checkOutDt.toFormat("h:mm a")}`;
+  } else {
+    displayDate = `${checkInDt.toFormat(
+      "MMM d, h:mm a"
+    )} - ${checkOutDt.toFormat("MMM d, h:mm a")}`;
+  }
+
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-4 mb-4 flex flex-col h-full">
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900 leading-tight">
-          {room.name}
-        </h3>
-        <div className="flex items-center text-sm text-gray-700">
-          <span className=" font-semibold truncate">{meeting.event_name}</span>
-        </div>
-        <div className="flex items-center text-sm text-gray-700">
-          <FaClock className="text-indigo-500 mr-2" />
-          <span className="font-semibold">Starts:</span>
-          <span className="ml-2">{formatDate(meeting.check_in)}</span>
-        </div>
-        <div className="flex items-center text-sm text-gray-700">
-          <FaClock className="text-indigo-500 mr-2" />
-          <span className="font-semibold">Ends:</span>
-          <span className="ml-2">{formatDate(meeting.check_out)}</span>
-        </div>
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mb-4 flex flex-col h-full">
+      {/* Top Section */}
+      <div className="flex-grow">
+        <p className="font-semibold text-gray-900">{meeting.event_name}</p>
+        <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
+          <FiClock className="h-4 w-4 text-gray-400" />
+          <span>{displayDate}</span>
+        </p>
       </div>
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between text-sm text-gray-700">
-          <span className="font-semibold">Capacity:</span>
-          <div className="flex items-center">
-            <FaUsers className="text-gray-500 mr-1" />
-            <span>{room.capacity}</span>
-          </div>
-        </div>
+
+      {/* --- Footer Section: UPDATED --- */}
+      <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+        {/* Left side: Room Name with the new icon */}
+        <p className="text-sm font-medium text-gray-700 flex items-center gap-2">
+          {/* ICON CHANGE: Replaced FiMapPin with FiHome */}
+          <FiHome className="h-4 w-4 text-purple-500" />
+          <span>{room.name}</span>
+        </p>
+
+        {/* Right side: Number of Attendees */}
+        {meeting?.attendees > 0 && (
+          <p className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+            <FiUsers className="h-4 w-4 text-cyan-500" />
+            <span>{meeting.attendees}</span>
+          </p>
+        )}
       </div>
     </div>
   );

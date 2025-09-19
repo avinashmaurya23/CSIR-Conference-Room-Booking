@@ -1,7 +1,7 @@
 export default function ScheduledDatesSidebar({ bookings, selectedDate }) {
   const filteredBookings = selectedDate
     ? bookings.filter(
-        (b) => b.check_in.slice(0, 10) === selectedDate // ISO date
+        (booking) => booking.check_in.slice(0, 10) === selectedDate // ISO date
       )
     : [];
 

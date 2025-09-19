@@ -33,6 +33,7 @@ async function bookRoom(previousState, formData) {
     const checkOutTime = formData.get("check_out_time");
     const eventName = formData.get("event_name");
     const roomId = formData.get("room_id");
+    const attendees = Number(formData.get("attendees"));
 
     // combine date and time to ISO 8601 format
     const checkInDateTime = `${checkInDate}T${checkInTime}`;
@@ -60,6 +61,7 @@ async function bookRoom(previousState, formData) {
       user_name: user.name,
       room_id: roomId,
       event_name: eventName,
+      attendees: attendees,
       booking_status: "Pending", // Set default status for new bookings
     };
 

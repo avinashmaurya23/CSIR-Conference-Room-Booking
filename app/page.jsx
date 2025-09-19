@@ -3,15 +3,26 @@ import Heading from "@/components/Heading";
 import getAllRooms from "./actions/getAllRooms";
 import getScheduledMeetings from "./actions/getScheduledMeetings";
 import MeetingCard from "@/components/MeetingCard";
+import { FiCalendar, FiSlash } from "react-icons/fi";
+import ScheduledMeeting from "@/components/ScheduledMeeting";
+import Dashboard from "@/components/Dashboard";
 
 export default async function Home() {
   const rooms = await getAllRooms();
   const meetings = await getScheduledMeetings();
+
   return (
-    <>
-      <Heading title="Available Conference Rooms" />
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 p-4 sm:px-0">
-        <div className="w-full md:w-3/4 lg:w-4/5">
+    // LAYOUT CHANGE: Switched to CSS Grid for a precise match to your original UI.
+    // On large screens (lg), it creates two columns: one flexible (1fr) and one fixed sidebar (320px).
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 px-4 sm:px-6 lg:px-8 ">
+      {/* --- Main Content (Left Column) --- */}
+      {/* This is now the first grid column, which takes up all flexible space ('1fr'). */}
+      <main>
+        <Dashboard />
+
+        <Heading title="Available Conference Rooms" />
+
+        <div className="mt-6">
           {rooms.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {rooms.map((room) => (
@@ -19,28 +30,22 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-600 mt-8">NO rooms available</p>
+            <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-xl">
+              <FiSlash className="w-16 h-16 text-gray-300" />
+              <p className="text-center text-gray-500 mt-4">
+                No conference rooms are currently available.
+              </p>
+            </div>
           )}
         </div>
-        <div className="w-full md:w-1/4 lg:w-1/5">
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 h-fit">
-            <h1 className="text-xl font-semibold text-black">
-              Upcoming Meetings:
-            </h1>
-            {meetings.length > 0 ? (
-              <div className="mt-4 mx-2 space-y-4">
-                {meetings.map((meeting) => (
-                  <MeetingCard meeting={meeting} key={meeting.$id} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-600 mt-8">
-                NO Meetings Scheduled
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+      </main>
+
+      {/* --- Sidebar (Right Column) --- */}
+      {/* This is the second grid column, with a fixed width defined in the grid layout. */}
+      <aside className="space-y-6">
+        <ScheduledMeeting meetings={meetings} />
+        {/* You can add the calendar card here in the future and 'space-y-6' will space it out automatically */}
+      </aside>
+    </div>
   );
 }
