@@ -14,7 +14,9 @@ import {
   FiLogIn,
   FiUserPlus,
   FiLogOut,
+  FiPlus,
 } from "react-icons/fi";
+
 import {
   FaUserCog,
   FaSignOutAlt,
@@ -25,6 +27,7 @@ import {
 import { toast } from "react-toastify";
 import destroySession from "@/app/actions/destroySession";
 import { useAuth } from "@/context/authContext";
+import BookRoomButton from "./BookRoomButton";
 
 const Header = () => {
   const router = useRouter();
@@ -35,6 +38,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const handleLogout = async () => {
     setIsDropdownOpen(false);
@@ -105,6 +109,15 @@ const Header = () => {
                 >
                   New Requests
                 </Link>
+              )}
+              {isAuthenticated && (
+                <button
+                  onClick={() => setIsBookingModalOpen(true)}
+                  className="flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+                >
+                  <FiPlus className="w-5 h-5" />
+                  <span>Book Room</span>
+                </button>
               )}
             </div>
           </div>
@@ -302,6 +315,10 @@ const Header = () => {
           </div>
         </div>
       )}
+      <BookRoomButton
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+      />
     </header>
   );
 };
