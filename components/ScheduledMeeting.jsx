@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect } from "react"; // Imported useEffect
+import { useState, useMemo, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import MeetingCard from "./MeetingCard";
@@ -20,8 +20,6 @@ const toYYYYMMDD = (date) => {
 
 const ScheduledMeeting = ({ meetings }) => {
   const [selected, setSelected] = useState(new Date());
-
-  // State to control the visibility for animation
   const [isListVisible, setIsListVisible] = useState(true);
 
   const meetingDateObjects = useMemo(
@@ -50,33 +48,37 @@ const ScheduledMeeting = ({ meetings }) => {
     });
   }, [meetings, selected]);
 
-  // This useEffect triggers the animation whenever the selected date changes.
   useEffect(() => {
-    setIsListVisible(false); // First, hide the list
+    setIsListVisible(false);
     const timer = setTimeout(() => {
-      setIsListVisible(true); // Then, make it visible to trigger the fade-in
-    }, 100); // A short delay
+      setIsListVisible(true);
+    }, 100);
     return () => clearTimeout(timer);
-  }, [selected]); // Dependency is the selected date
+  }, [selected]);
 
-  const formattedDate = selected
-    ? selected.toLocaleString(undefined, {
+  // --- START OF CHANGE ---
+  // Logic to determine the correct title based on the selected date.
+  const isSelectedDateToday = toYYYYMMDD(selected) === toYYYYMMDD(new Date());
+
+  const title = isSelectedDateToday
+    ? "Meetings Today"
+    : `Meetings on ${selected.toLocaleString(undefined, {
         month: "short",
         day: "numeric",
         year: "numeric",
-      })
-    : "";
+      })}`;
+  // --- END OF CHANGE ---
 
   return (
     <>
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-fit p-4">
         <h2 className="text-lg font-bold text-gray-900 text-center border-b border-gray-100 pb-3 mb-4">
-          Meetings {selected && `on ${formattedDate}`}
+          {/* Use the new title variable here */}
+          {title}
         </h2>
         {filteredMeetings.length > 0 ? (
           <div className="space-y-4 overflow-y-auto pr-2">
             {filteredMeetings.map((meeting, index) => (
-              // Each card is wrapped in a div for the animation
               <div
                 key={meeting.$id}
                 className={`transition-all duration-300 ease-in-out ${
@@ -84,7 +86,7 @@ const ScheduledMeeting = ({ meetings }) => {
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-3"
                 }`}
-                style={{ transitionDelay: `${index * 75}ms` }} // This creates the staggered effect
+                style={{ transitionDelay: `${index * 75}ms` }}
               >
                 <MeetingCard meeting={meeting} />
               </div>
