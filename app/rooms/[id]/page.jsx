@@ -18,7 +18,7 @@ import ScheduledMeeting from "@/components/ScheduledMeeting";
 import getBookingSchedule from "@/app/actions/getBookingSchedule";
 
 const RoomPage = async ({ params }) => {
-  const { id } = params;
+  const { id } = await params;
   const room = await getSingleRoom(id);
 
   if (!room) {

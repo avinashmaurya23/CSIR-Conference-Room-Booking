@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={inter.className}>
           <Header />
-          <main className="bg-gray-100  py-6 ">{children}</main>
+          <main className="bg-gray-100  py-6  ">{children}</main>
 
           <Footer />
           <ToastContainer />
@@ -31,3 +31,4 @@ export default function RootLayout({ children }) {
     </AuthWrapper>
   );
 }
+// bg-[url('@/assets/images/background(2).png')] bg-cover bg-no-repeat

@@ -213,7 +213,7 @@ const BookingForm = ({ room, bookedDates = [] }) => {
   useEffect(() => {
     if (state.error) toast.error(state.error);
     if (state.success) {
-      toast.success("Room has been booked!");
+      toast.success("Request raised sucessfully!");
       router.push("/bookings");
     }
   }, [state, router]);
