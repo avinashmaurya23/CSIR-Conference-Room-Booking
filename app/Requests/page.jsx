@@ -1,22 +1,26 @@
 import React from "react";
 import Heading from "@/components/Heading";
-import BookedRoomCardAdmin from "@/components/BookedRoomCardAdmin";
-import getNewBookings from "../actions/getNewBookings";
+import BookedRoomCard from "@/components/BookedRoomCard";
+import getMyBookings from "@/app/actions/getMyBookings";
 
-const RequestsPage = async () => {
-  const bookings = await getNewBookings();
+const BookingsPage = async () => {
+  const bookings = await getMyBookings();
+
   return (
-    <>
-      <Heading title="New Bookings Requests" />
+    <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <Heading title="My Bookings" />
       {bookings.length === 0 ? (
-        <p className="text-grey-600 mt-4"> You Have no bokings</p>
+        <p className="text-gray-600 mt-4 max-w-7xl mx-auto ">
+          {" "}
+          Sorry, You Have no bookings.
+        </p>
       ) : (
         bookings.map((booking) => (
-          <BookedRoomCardAdmin key={booking.$id} booking={booking} />
+          <BookedRoomCard key={booking.$id} booking={booking} />
         ))
       )}
-    </>
+    </div>
   );
 };
 
-export default RequestsPage;
+export default BookingsPage;
