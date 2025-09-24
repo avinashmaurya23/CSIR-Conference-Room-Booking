@@ -31,4 +31,3 @@ export default function RootLayout({ children }) {
     </AuthWrapper>
   );
 }
-// bg-[url('@/assets/images/background(2).png')] bg-cover bg-no-repeat
