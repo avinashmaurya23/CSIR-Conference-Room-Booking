@@ -104,19 +104,13 @@ const Header = () => {
               )}
               {isAdmin && (
                 <Link
-                  href="/requests"
+                  href="/Requests"
                   className="rounded-md px-3 py-2 text-base font-semibold text-gray-600 hover:bg-gray-700 hover:text-white"
                 >
                   New Requests
                 </Link>
               )}
 
-              <Link
-                href="/requests"
-                className="rounded-md px-3 py-2 text-base font-semibold text-gray-600 hover:bg-gray-700 hover:text-white"
-              >
-                New Requests
-              </Link>
               {isAuthenticated && (
                 <button
                   onClick={() => setIsBookingModalOpen(true)}
